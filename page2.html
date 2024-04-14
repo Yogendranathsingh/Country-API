@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<style>
+    *{
+        box-sizing: border-box;
+        margin: 0;padding: 0;
+    }
+
+    div{
+        border: 1px solid gray;
+    }
+
+    #root{
+        display: flex;
+    }
+
+    #root>div{
+        width: 50%;
+        height: 100vh;
+    }
+
+    #root>.left,#root>.right{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    }
+
+    .right>*{
+    margin: 10px 0;
+    }
+
+    .content{
+        display: flex;
+        gap: 50px;
+        flex-wrap: wrap;
+    }
+
+    img{
+        width: 100%;
+    }
+</style>
+
+<body>
+    
+    <div id="root">
+        <!-- <div class="left">
+         <img src="https://flagcdn.com/w320/gy.png" alt="error">
+        </div>
+        <div class="right">
+            <h1>Belgium</h1>
+            <div class="content">
+            <div>Native Name:India</div>
+            <div>Top Level Domain:India</div>
+            <div>Population:India</div>
+            <div>Currencies:India</div>
+            <div>Region:India</div>
+            <div>Languages:India</div>
+            <div>SubRegin:India</div>
+            <div>Capital:India</div>
+            </div>
+
+            <div>Border Countries:India</div>
+        </div> -->
+    </div>
+
+
+    <script>
+        // Function to parse query parameters from URL
+        function getQueryParams() {
+            const queryParams = {};
+
+            const queryString = window.location.search.substring(1);
+            const pairs = queryString.split('&');
+
+            pairs.forEach(pair => {
+                const parts = pair.split('=');
+                const key = decodeURIComponent(parts[0]);
+                const value = decodeURIComponent(parts[1]);
+                queryParams[key] = value;
+            });
+            return queryParams;
+        }
+
+        // Get query parameters from URL
+        const queryParams = getQueryParams();
+
+        const Name = queryParams['Name'];
+        console.log(Name);
+
+
+        async function foo() {
+            const response = await fetch('https://restcountries.com/v3.1/all');
+            const data = await response.json();
+            console.log("data[0]: ",data[0]);
+            const countries = data.map((e) => {
+                return {
+                    Flag:e.flags.svg,
+                    Name: e.name.common,
+                    NativeName: e.name.nativeName,
+                    TopLevelDomain: e.tld,
+                    Population: e.population,
+                    Currencies: e.currencies,
+                    Languages: e.languages,
+                    SubRegion: e.subregion ? e.subregion : null,
+                    Capital: e.capital ? e.capital[0] : null,
+                    BorderCountries: e.borders,
+                    Region:e.region
+                }
+            })
+
+            const cc = countries.filter((e) => e.Name.toLowerCase() == Name.toLowerCase())
+            console.log("cc : ", cc[0]);
+
+            const root=document.querySelector('#root');
+
+            const card=`<div class="left">
+         <img src=${cc[0].Flag} alt="error">
+        </div>
+        <div class="right">
+            <h1>Belgium</h1>
+            <div class="content">
+            <div>Native Name:${cc[0].Name}</div>
+            <div>Top Level Domain:${cc[0].TopLevelDomain}</div>
+            <div>Population:${cc[0].Population}</div>
+            <div>Currencies:${cc[0].Currencies}</div>
+            <div>Region:${cc[0].Region}</div>
+            <div>Languages:${cc[0].Languages}</div>
+            <div>SubRegin:${cc[0].SubRegion}</div>
+            <div>Capital:${cc[0].Capital}</div>
+            </div>
+
+            <div>Border Countries:${cc[0].BorderCountries}</div>
+        </div>`
+        root.innerHTML=card;
+        }
+
+        foo()
+    </script>
+</body>
+
+</html>
