@@ -1,9 +1,14 @@
 const input = document.querySelector('input');
 root = document.getElementById("root");
 const tagRegions = document.querySelector('#regions');
+const body=document.querySelector("body")
 
 let Data;
+console.log(body.classList);
+let isDarkMode=body.classList.value.search('dark-mode-1');
 const url=window.location.href
+
+let filteredData=[]
 
 async function foo() {
     const response = await fetch('https://restcountries.com/v3.1/all')
@@ -45,14 +50,14 @@ async function foo() {
         let text = ``;
         filteredData?.forEach((val, index) => {
             if (val == undefined) {
-
+             
             }
             const newCard = `
         <div class="card">
-        <button onclick="">
-        <a href="page2.html?Name=${val.Name}"  class="card-1">
+        <div class="card-1">
+        <a href="page2.html?Name=${val.Name}&isDarkMode=${isDarkMode}">
         <img src= ${val.Flag2} alt="reload"></a>
-        </button>
+        </div>
         <div class="card-2">
             <h2>${val.Name}</h2>
             <p>Population: ${val.Population}</p>
@@ -67,6 +72,7 @@ async function foo() {
 
     }
     updateHTML()
+    if(isDarkMode!=-1) adm()
 
     let val = "";
     input.addEventListener('input', (e) => {
@@ -84,6 +90,7 @@ async function foo() {
             filteredData = newData
         }
         updateHTML()
+        if(isDarkMode!=-1) adm(),updateHTML()
     })
 
 
@@ -100,9 +107,64 @@ async function foo() {
         }
         else filteredData=newData
         updateHTML()
+        if(isDarkMode!=-1) adm()
     })
 }
 
 foo();
+
+
+function adm(){
+    const body=document.querySelector('body')
+    const cards=document.querySelectorAll('.card')
+    const card2s=document.querySelectorAll('.card-2')
+    const as= document.querySelectorAll('a')
+
+    cards.forEach((card)=>{
+        card.classList.add('dark-mode-2')
+        })
+        
+        card2s.forEach((card2)=>{
+        card2.classList.add('dark-mode-2')
+        })
+        
+        as.forEach((a)=>{
+        a.classList.add('dark-mode-1')
+        })
+        body.classList.add('dark-mode-1')
+        isDarkMode=body.classList.value.search('dark-mode-1');
+        console.log("isDarkMode ",isDarkMode)
+
+}
+
+function rdm(){
+    const body=document.querySelector('body')
+    const cards=document.querySelectorAll('.card')
+    const card2s=document.querySelectorAll('.card-2')
+    const as= document.querySelectorAll('a')
+
+    cards.forEach((card)=>{
+        card.classList.remove('dark-mode-2')
+        })
+        
+        card2s.forEach((card2)=>{
+        card2.classList.remove('dark-mode-2')
+        })
+        
+        as.forEach((a)=>{
+        a.classList.remove('dark-mode-1')
+        })
+        body.classList.remove('dark-mode-1')
+        isDarkMode=body.classList.value.search('dark-mode-1');
+}
+
+function tdm(){
+if(isDarkMode==-1){
+  adm()
+  foo()
+}
+else rdm();
+}
+
 
 

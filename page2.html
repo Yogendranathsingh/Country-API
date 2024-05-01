@@ -5,25 +5,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,600,800" rel="stylesheet" />
 </head>
 
 <style>
     *{
         box-sizing: border-box;
         margin: 0;padding: 0;
+        font-size: 17px;
+        font-family: Nunito Sans;
     }
 
-    div{
-        border: 1px solid gray;
+    body{
+    background-color: hsl(0, 0%, 98%);
     }
+
+    nav {
+    height: 50px;
+    display: flex;
+    justify-content: space-around;
+    border: 1px solid gray;
+    align-items: center;
+}
 
     #root{
+        background-color: white;
         display: flex;
+        /* border: 2px solid black; */
+        border-radius: 10px;
+        box-shadow: 10px 10px rgb(214, 212, 212);
+        border: 1px solid rgb(214, 212, 212);
+        
+        width: 70vw;
+        margin: 70px auto
     }
 
     #root>div{
-        width: 50%;
-        height: 100vh;
+        width: 50vw;
     }
 
     #root>.left,#root>.right{
@@ -33,23 +51,57 @@
     flex-direction: column;
     }
 
-    .right>*{
-    margin: 10px 0;
+    .right{
+        /* border: 2px solid greenyellow; */
+        padding: 25px;
     }
 
-    .content{
-        display: flex;
-        gap: 50px;
-        flex-wrap: wrap;
+    .right .content{
+        /* border: 2px solid rgb(219, 250, 44); */
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 20px;
+        margin: 25px 0px 25px 0px;
+        width: 100%;
+    }
+
+    .left{
+        padding: 25px;
     }
 
     img{
         width: 100%;
     }
+
+    .back{
+     position: absolute;
+     left: 166px;
+     top: 72px;
+    }
+
+    .back a{
+        text-decoration: none;
+        padding: 3px 8px 3px 8px;
+    }
+
+    .dark-mode-1{
+    background-color:hsl(209, 23%, 22%) !important;
+    color: white !important;
+    /* background-color: hsl(0, 0%, 52%); */
+    }
+
 </style>
 
-<body>
-    
+<body >
+    <button class="back"><a href="./index.html">back</a></button>
+    <nav>
+        <div>
+            <h1>Where in the World?</h1>
+        </div>
+        <div>
+            Dark Mode
+        </div>
+    </nav>
     <div id="root">
         <!-- <div class="left">
          <img src="https://flagcdn.com/w320/gy.png" alt="error">
@@ -93,13 +145,15 @@
         const queryParams = getQueryParams();
 
         const Name = queryParams['Name'];
+        const isDarkMode=parseInt(queryParams['isDarkMode'])
         console.log(Name);
+        console.log(isDarkMode);
 
 
         async function foo() {
             const response = await fetch('https://restcountries.com/v3.1/all');
             const data = await response.json();
-            console.log("data[0]: ",data[0]);
+            // console.log("data[0]: ",data[1]);
             const countries = data.map((e) => {
                 return {
                     Flag:e.flags.svg,
@@ -107,8 +161,8 @@
                     NativeName: e.name.nativeName,
                     TopLevelDomain: e.tld,
                     Population: e.population,
-                    Currencies: e.currencies,
-                    Languages: e.languages,
+                    Currencies: e.currencies?Object.keys(e.currencies):[],
+                    Languages: e.languages?Object.values(e.languages):[],
                     SubRegion: e.subregion ? e.subregion : null,
                     Capital: e.capital ? e.capital[0] : null,
                     BorderCountries: e.borders,
@@ -125,7 +179,7 @@
          <img src=${cc[0].Flag} alt="error">
         </div>
         <div class="right">
-            <h1>Belgium</h1>
+            <h1 style="font-size:25px">${Name}</h1>
             <div class="content">
             <div>Native Name:${cc[0].Name}</div>
             <div>Top Level Domain:${cc[0].TopLevelDomain}</div>
@@ -140,10 +194,24 @@
             <div>Border Countries:${cc[0].BorderCountries}</div>
         </div>`
         root.innerHTML=card;
+
+        if(isDarkMode!=-1){
+            adm()
+        }
         }
 
         foo()
-    </script>
+
+    function adm(){
+    const body=document.querySelector('body')
+    const root=document.getElementById('root')
+    root.classList.add('dark-mode-1')   
+    body.classList.add('dark-mode-1')
+    isDarkMode=body.classList.value.search('dark-mode-1');
+    console.log("isDarkMode ",isDarkMode)
+
+}
+ </script>
 </body>
 
 </html>
